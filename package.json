@@ -1,0 +1,23 @@
+{
+  "name": "lambda-dynamodb-CRUD",
+  "version": "1.0.0",
+  "description": "Full CRUD with lambda and dynamoDB (more practice)",
+  "main": "handler.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jawad727/lambda-dynamodb-CRUD.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jawad727/lambda-dynamodb-CRUD/issues"
+  },
+  "homepage": "https://github.com/jawad727/lambda-dynamodb-CRUD#readme",
+  "dependencies": {
+    "uuid": "^3.3.3"
+  }
+}
