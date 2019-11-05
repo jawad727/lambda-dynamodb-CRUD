@@ -74,8 +74,8 @@ module.exports.getPost = (event, context, callback) => {
   }
   return db.get(params).promise()
   .then(res => {
-    if (res.Item) { callback(null, resonse(200, res.Item)) }
-    else { callback(null, response(404, {error: "Post not found"})) }
+    if (res.Item) callback(null, response(200, res.Item)) 
+    else callback(null, response(404, {error: "Post not found"})) 
   })
   .catch(err => callback(null, response(err.statusCode, err)))
 }
@@ -93,7 +93,7 @@ module.exports.updatePost = (event, context, callback) => {
     TableName: postsTable,
     ConditionExpression: "attribute_exists(id)",
     UpdateExpression: "set " + paramName + " = :v",
-    ExpressionAttributeValues = {
+    ExpressionAttributeValues: {
       ":v": paramValue 
     },
     ReturnValue: "ALL_NEW"

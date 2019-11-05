@@ -32,13 +32,13 @@ functions:
     handler: handler.getAllPosts
     events:
       - http:
-          path: /post
+          path: /posts
           method: get
   getPosts:
     handler: handler.getPosts
     events:
       - http:
-          path: /post/{number}
+          path: /posts/{number}
           method: get
   getPost:
     handler: handler.getPost
