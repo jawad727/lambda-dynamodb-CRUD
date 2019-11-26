@@ -4,6 +4,7 @@ const db = new AWS.DynamoDB.DocumentClient({ apiVersion: "2012-08-10" })
 const uuid = require("uuid/v4")
 
 const postsTable = process.env.POSTS_TABLE;
+
 // create a response
 function response(statusCode, message) {
   return {
@@ -22,16 +23,30 @@ function sortByDate(a, b) {
 module.exports.createPost = (event, context, callback) => {
   const reqBody = JSON.parse(event.body)
 
-  if (!reqBody.title || reqBody.title.trim() === "" || !reqBody.body || reqBody.body.trim() === "") {
-    return callback(nuull, response(400, { err: "Post must have a title and body and they must not be empty" }))
-  }
+  // if (!reqBody.title || reqBody.title.trim() === "" || !reqBody.body || reqBody.body.trim() === "") {
+  //   return callback(nuull, response(400, { err: "Post must have a title and body and they must not be empty" }))
+  // }
+
+  // const post = {
+  //   id: uuid(),
+  //   createdAt: new Date().toISOString(),
+  //   userId: 1,
+  //   title: reqBody.title,
+  //   body: reqBody.body
+  // }
 
   const post = {
-    id: uuid(),
-    createdAt: new Date().toISOString(),
-    userId: 1,
-    title: reqBody.title,
-    body: reqBody.body
+    PostTime: new Date().toISOString(),
+    DisplayName: reqBody.DisplayName,
+    Email: reqBody.Email,
+    UID: reqBody.UID,
+    StoreName: reqBody.StoreName,
+    StoreLocation: reqBody.StoreLocation,
+    StorePhoneNumber: reqBody.StorePhoneNumber,
+    StoreGoogleRating: reqBody.StoreGoogleRating,
+    StoreWebsite: reqBody.StoreWebsite,
+    text: reqBody.text,
+    upVote: reqBody.upVote
   }
 
   return db.put({
@@ -42,6 +57,7 @@ module.exports.createPost = (event, context, callback) => {
   })
   .catch(err => response(null, response(err.statusCode, err)));
 }
+
 // get all posts
 module.exports.getAllPosts = (event, context, callback) => {
   return db.scan({
@@ -50,6 +66,7 @@ module.exports.getAllPosts = (event, context, callback) => {
     callback(null, response(200, res.Items.sort(sortByDate)))
   }).catch(err => callback(null, response(err.statusCode, err)))
 }
+
 // Get number of posts
 module.exports.getPosts = (event, context, callback) => {
   const numberOfPosts = event.pathParameters.number;
@@ -63,6 +80,7 @@ module.exports.getPosts = (event, context, callback) => {
     callback(null, response(200, res.Items.sort(sortByDate)))
   }).catch(err => callback(null, response(err.statusCode, err)))
 }
+
 // Get a single post
 module.exports.getPost = (event, context, callback) => {
   const id = event.pathParameters.id;
@@ -79,6 +97,7 @@ module.exports.getPost = (event, context, callback) => {
   })
   .catch(err => callback(null, response(err.statusCode, err)))
 }
+
 // Update a post
 module.exports.updatePost = (event, context, callback) => {
   const id = event.pathParameters.id;
@@ -106,6 +125,7 @@ module.exports.updatePost = (event, context, callback) => {
   })
   .catch(err => callback(null, resonse(err.statusCode, err)))
 }
+
 // Delete a post
 module.exports.deletePost = (event, context, callback) => {
   const id = event.pathParameters.id;
