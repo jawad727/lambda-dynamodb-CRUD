@@ -9,12 +9,16 @@ const postsTable = process.env.POSTS_TABLE;
 function response(statusCode, message) {
   return {
     statusCode: statusCode,
-    body: JSON.stringify(message)
+    body: JSON.stringify(message),
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Credentials': true,
+    }
   }
 }
 
 function sortByDate(a, b) {
-  if (a.createdAt > b.createdAt) {
+  if (a.PostTime > b.PostTime) {
     return -1
   } else return 1;
 }
@@ -22,18 +26,6 @@ function sortByDate(a, b) {
 // create a post
 module.exports.createPost = (event, context, callback) => {
   const reqBody = JSON.parse(event.body)
-
-  // if (!reqBody.title || reqBody.title.trim() === "" || !reqBody.body || reqBody.body.trim() === "") {
-  //   return callback(nuull, response(400, { err: "Post must have a title and body and they must not be empty" }))
-  // }
-
-  // const post = {
-  //   id: uuid(),
-  //   createdAt: new Date().toISOString(),
-  //   userId: 1,
-  //   title: reqBody.title,
-  //   body: reqBody.body
-  // }
 
   const post = {
     PostTime: new Date().toISOString(),
@@ -62,8 +54,9 @@ module.exports.createPost = (event, context, callback) => {
 module.exports.getAllPosts = (event, context, callback) => {
   return db.scan({
     TableName: postsTable
-  }).promise().then(res => {
-    callback(null, response(200, res.Items.sort(sortByDate)))
+  }).promise()
+  .then(res => {
+    callback(null, response(201, res.Items))
   }).catch(err => callback(null, response(err.statusCode, err)))
 }
 
@@ -77,7 +70,7 @@ module.exports.getPosts = (event, context, callback) => {
   return db.scan(params)
   .promise()
   .then(res => {
-    callback(null, response(200, res.Items.sort(sortByDate)))
+    callback(null, response(200, res.Items))
   }).catch(err => callback(null, response(err.statusCode, err)))
 }
 
@@ -123,7 +116,7 @@ module.exports.updatePost = (event, context, callback) => {
   .then(res => {
     callback(null, response(200, res))
   })
-  .catch(err => callback(null, resonse(err.statusCode, err)))
+  .catch(err => callback(null, response(err.statusCode, err)))
 }
 
 // Delete a post
