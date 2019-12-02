@@ -77,16 +77,14 @@ module.exports.getPosts = (event, context, callback) => {
 
 // Get a single post
 module.exports.getPost = (event, context, callback) => {
-  const UID = event.pathParameters.UID;
+  const theuser = event.pathParameters.uid;
   const params = {
     
     ExpressionAttributeNames: {
-      "#userid": "text"
+      "#userid": "UID"
     },
     ExpressionAttributeValues: {
-      ":userid": {
-        S: "The fries were too salty, and the big mac made me fat!"
-      }
+      ":userid": theuser
     },
     FilterExpression: "#userid = :userid",
     TableName: postsTable
@@ -95,7 +93,7 @@ module.exports.getPost = (event, context, callback) => {
   return db.scan(params)
   .promise()
   .then(res => {
-    callback(null, response(200, res))
+    callback(null, response(200, res.Items))
   }).catch(err => callback(null, response(err.statusCode, err)))
 }
 
