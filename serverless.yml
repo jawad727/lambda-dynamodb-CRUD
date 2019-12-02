@@ -28,6 +28,7 @@ functions:
       - http:
           path: /post
           method: post
+          cors: true
   getAllPosts:
     handler: handler.getAllPosts
     events:
@@ -46,9 +47,9 @@ functions:
     handler: handler.getPost
     events:
       - http:
-          path: /post/{id}
+          path: /poste/{uid}
           method: get
-          cors: true 
+          cors: true
   updatePost:
     handler: handler.updatePost
     events:

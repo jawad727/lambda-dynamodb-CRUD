@@ -28,7 +28,8 @@ module.exports.createPost = (event, context, callback) => {
   const reqBody = JSON.parse(event.body)
 
   const post = {
-    PostTime: new Date().toISOString(),
+    id: uuid(),
+    createdAt: new Date().toISOString(),
     DisplayName: reqBody.DisplayName,
     Email: reqBody.Email,
     UID: reqBody.UID,
@@ -76,19 +77,26 @@ module.exports.getPosts = (event, context, callback) => {
 
 // Get a single post
 module.exports.getPost = (event, context, callback) => {
-  const id = event.pathParameters.id;
+  const UID = event.pathParameters.UID;
   const params = {
-    Key:{
-      id: id
+    
+    ExpressionAttributeNames: {
+      "#userid": "text"
     },
+    ExpressionAttributeValues: {
+      ":userid": {
+        S: "The fries were too salty, and the big mac made me fat!"
+      }
+    },
+    FilterExpression: "#userid = :userid",
     TableName: postsTable
   }
-  return db.get(params).promise()
+
+  return db.scan(params)
+  .promise()
   .then(res => {
-    if (res.Item) callback(null, response(200, res.Item)) 
-    else callback(null, response(404, {error: "Post not found"})) 
-  })
-  .catch(err => callback(null, response(err.statusCode, err)))
+    callback(null, response(200, res))
+  }).catch(err => callback(null, response(err.statusCode, err)))
 }
 
 // Update a post
